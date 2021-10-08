@@ -72,7 +72,7 @@
   }
 
 
-  function isBoardFull() {
+  function isBoardFull(board) {
       // Return true if board is full
 
       for (var i = 0; i < 9; i++) {
@@ -91,7 +91,7 @@
   }
 
 
-  function findWinner() {
+  function findWinner(board) {
       // Return 'X' or 'O' for winner (or null if no winner yet)
 
       var cell;
@@ -151,6 +151,15 @@
   let maxDepth = -1;
   let nodesMap = new Map();
 
+  function getAvailableMoves(board) {
+      const moves = []
+      board.forEach((cell, index) => {
+          if(!cell) moves.push(index);
+          
+      });
+      return moves;
+  }
+
   function computerMove(board, maximizing = true, callback = () => {}, depth = 0) {
       // Make next possible move for the computer
 
@@ -161,10 +170,10 @@
     //       }
     //   }
         if (depth === 0) {nodesMap.clear()}
-        if (depth === maxDepth) {
-            if (findWinner() === 'O') {
+        if (findWinner(board) || isBoardFull(board) || depth === maxDepth) {
+            if (findWinner(board) === 'O') {
                 return -100 + depth;
-            } else if (findWinner() === 'X') {
+            } else if (findWinner(board) === 'X') {
                 return 100 - depth;
             }
             return 0
@@ -172,23 +181,22 @@
         if (maximizing) {
             let best = -100;
             // console.log(`running Max turn at depth ${depth}`)
-            for (let index = 0; index < board.length; index++) {
-                if (board[index] === null) {
+            getAvailableMoves(board).forEach(index => {
+                
                     const child = [...board];
                     child[index] = 'X';
                     const nodeValue = computerMove(child, false, callback, depth + 1);
+                    
 
                     best = Math.max(best, nodeValue);
 
                     if (depth == 0) {
-                        const moves = nodesMap.has(nodeValue)
-                            ? `${nodesMap.get(nodeValue)},${index}`
-                            : index;
+                        const moves = nodesMap.has(nodeValue) ? `${nodesMap.get(nodeValue)},${index}` : index;
                         nodesMap.set(nodeValue, moves);
                     }
-                }
+                
 
-            };
+            });
 
             if(depth == 0) {
                 let returnValue;
@@ -208,24 +216,25 @@
         if (!maximizing) {
             let best = 100;
             // console.log(`running Min turn at depth ${depth}`)
-            for (let index = 0; index < board.length; index++){
-                if (board[index] === null) {
+            getAvailableMoves(board).forEach(index => {
+                
                     const child = [...board];
                     child[index] = 'O';
                     // console.log(child)
                     const nodeValue = computerMove(child, true, callback, depth + 1);
+                    
 
                     best = Math.min(best, nodeValue);
 
                     if (depth == 0) {
                         const moves = nodesMap.has(nodeValue)
-                            ? `${nodesMap.get(nodeValue)},${index}`
+                            ? nodesMap.get(nodeValue) + "," + index
                             : index;
                         nodesMap.set(nodeValue, moves);
                     }
-                }
+                
 
-            };
+            });
 
             if(depth == 0) {
                 let returnValue;
@@ -236,6 +245,7 @@
                 } else {
                     returnValue = nodesMap.get(best)
                 }
+                console.log(depth)
                 callback(returnValue)
                 return returnValue
             }
@@ -246,10 +256,10 @@
   }
 
 
-  function checkGameOver() {
+  function checkGameOver(board) {
       // Check if game over, notifying if so. Return true for game over, else false
 
-      var winner = findWinner();
+      var winner = findWinner(board);
       var gameOver = false;
 
       if (winner) {
@@ -257,7 +267,7 @@
           gameOver = true;
       }
 
-      else if (isBoardFull()) {
+      else if (isBoardFull(board)) {
           $("h1").text("Tie!");
           gameOver = true;
       }
@@ -269,6 +279,7 @@
 
       return gameOver;
   }
+
 
 
   function makeHumanMove(cellNumber) {
@@ -283,10 +294,13 @@
       if (placePiece(cellNumber, "X")) {
           updateBoard();
 
-          if (! checkGameOver()) {
-              board[computerMove(board, false)] = 'O';
+          if (! checkGameOver(board)) {
+              console.log(board)
+              computerMove(board, false, best => {board[best] = 'O'; console.log(best)})
+              console.log(nodesMap)
+            //   board[computerMove(board, false)] = 'O';
               updateBoard();
-              checkGameOver();
+              checkGameOver(board)
           }
       }
   }
