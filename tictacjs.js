@@ -273,6 +273,7 @@ function handleClick(evt) {
 
 function startGame(evt) {
     // Handle start-game button
+    rollbar.warning('Starting game! Errors should only come after this point...')
 
     initializeBoard();
 
