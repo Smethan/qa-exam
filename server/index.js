@@ -15,6 +15,8 @@ app.get('/',function(req,res) {
   rollbar.info('successfully served html')
 });
 
+app.use('/js', express.static(path.join(__dirname, '../tictacjs.js')))
+
 const port = process.env.PORT || 4000
 
 app.listen(port, () => {
