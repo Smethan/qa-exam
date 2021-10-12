@@ -1,10 +1,14 @@
 /* Tic-Tac Javascript */
-const Rollbar = require(['rollbar'])
-var rollbar = new Rollbar({
+var rollbarConfig = {
   accessToken: '45de4a680f9e4823bddad3fccc8f85ce',
   captureUncaught: true,
   captureUnhandledRejections: true,
-})
+}
+
+require(["rollbar.umd.nojson.min.js"], function(Rollbar) {
+    var rollbar = Rollbar.init(rollbarConfig);
+    rollbar.info('Hello world');
+  });
 
 // The board is a simple 9-element array of null-for-empty, "X", or "O"
 var board;
