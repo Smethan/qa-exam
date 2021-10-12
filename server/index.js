@@ -17,7 +17,7 @@ app.get('/',function(req,res) {
 
 app.use('/js', express.static(path.join(__dirname, '../tictacjs.js')))
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 5500
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)
