@@ -10,6 +10,8 @@ var rollbar = new Rollbar({
 
 const app = express()
 
+app.use(rollbar.errorHandler())
+
 app.get('/',function(req,res) {
   res.sendFile(path.join(__dirname, '../tictacjs.html'));
   rollbar.info('successfully served html')

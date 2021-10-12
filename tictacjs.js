@@ -1,5 +1,10 @@
 /* Tic-Tac Javascript */
-
+const Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: '45de4a680f9e4823bddad3fccc8f85ce',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
 
 // The board is a simple 9-element array of null-for-empty, "X", or "O"
 var board;
@@ -7,8 +12,9 @@ var board;
 
 function initializeBoard() {
     // Initialize board to empty
-
+    
     board = [null, null, null, null, null, null, null, null, null];
+    rollbar.info('Initialized board')
 }
 
 
@@ -245,10 +251,7 @@ function makeHumanMove(cellNumber) {
         updateBoard();
 
         if (! checkGameOver(board)) {
-            console.log(board)
             computerMove(board, false, best => {board[best] = 'O'; console.log(best)})
-            console.log(nodesMap)
-        //   board[computerMove(board, false)] = 'O';
             updateBoard();
             checkGameOver(board)
         }
@@ -260,7 +263,11 @@ function handleClick(evt) {
     // Handle a click from the user -- play a round of the game
 
     var cell = evt.currentTarget;
-    makeHumanMove(parseInt(cell.id[5]));
+    if (cell) {
+        makeHumanMove(parseInt(cell.id[5]));
+    } else {
+        rollbar.critical('Player somehow didnt click on a cell and triggered a click event')
+    }
 }
 
 
