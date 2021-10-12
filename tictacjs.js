@@ -1,5 +1,5 @@
 /* Tic-Tac Javascript */
-const Rollbar = require('rollbar')
+const Rollbar = require(['rollbar'])
 var rollbar = new Rollbar({
   accessToken: '45de4a680f9e4823bddad3fccc8f85ce',
   captureUncaught: true,
