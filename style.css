@@ -8,7 +8,7 @@ h1 {
 
 body {
     font-family: sans-serif;
-    background-color: #0a0710;
+    background-color: #121212;
     color: white
 }
 
@@ -19,12 +19,14 @@ body {
 }
 
 #game-board {
-    border: solid 2px white;
+    /* border: solid 2px white;
+    border-radius: 10px; */
     margin-bottom: 2em;
 }
 
 #game-board td {
-    border: solid 2px white;
+    border: solid 3px white;
+    border-radius: 10px;
     height: 160px;
     width: 160px;
     text-align: center;

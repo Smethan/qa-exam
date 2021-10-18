@@ -127,7 +127,7 @@ function computerMove(board, maximizing = true, callback = () => {}, depth = 0) 
 //       }
 //   }
     if (depth === 0) {nodesMap.clear()}
-    if (findWinner(board) || isBoardFull(board) || depth === maxDepth) {
+    if (findWinner(board) || isBoardFull(board) || depth == maxDepth) {
         if(findWinner(board)){
             if (findWinner(board).cell === 'O') {
                 return -100 + depth;
@@ -213,6 +213,48 @@ function computerMove(board, maximizing = true, callback = () => {}, depth = 0) 
 
 }
 
+function winnerCss(dir) {
+    var td = document.getElementById("game-board").getElementsByTagName("td")
+    var arr;
+    switch(dir) {
+        case "h-0":
+            arr = [0,1,2];
+            break;
+        case "h-1":
+            arr = [3,4,5];
+            break;
+        case "h-2":
+            arr = [6,7,8];
+            break;
+        case "v-0":
+            arr = [0,3,6];
+            break;
+        case "v-1":
+            arr = [1,4,7];
+            break;
+        case "v-2":
+            arr = [2,5,8];
+            break;
+        case "d-main":
+            console.log("d-main")
+            arr = [6,4,2];
+            break;
+        case "d-notmain":
+            arr = [8,4,0];
+            break;
+        default:
+            console.log("Error, invalid winner direction")
+            console.log(dir)
+            break;
+    }
+
+    for (i = 0; i < td.length; i++) {
+        if (arr.includes(i)) {
+            td[i].style.backgroundColor = "green"
+            td[i].style.color = "black"
+        }
+    }
+}
 
 function checkGameOver(board) {
     // Check if game over, notifying if so. Return true for game over, else false
@@ -223,6 +265,7 @@ function checkGameOver(board) {
 
     if (winner) {
         winnerText.innerHTML = `${winner.cell} Wins!`
+        winnerCss(winner.direction)
         gameOver = true;
     }
 
@@ -280,6 +323,11 @@ function startGame(depth, startingPlayer) {
     document.getElementById('start-game').disabled = true;
     document.getElementById('starting').disabled = true;
     document.getElementById('diff').disabled = true;
+    var td = document.getElementById("game-board").getElementsByTagName("td")
+    for (i = 0; i < td.length; i++) {
+        td[i].style.backgroundColor = null;
+        td[i].style.color = null;
+    }
     initializeBoard();
     updateBoard();
     document.getElementById("winner").innerHTML = "Game is running!"
@@ -299,7 +347,7 @@ function startGame(depth, startingPlayer) {
         updateBoard();
         checkGameOver(board);
     }
-
+    console.log(maxDepth)
     // Remove start-game button
     // $(this).remove();
 }
