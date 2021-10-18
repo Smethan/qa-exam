@@ -1,0 +1,33 @@
+* {
+    box-sizing: border-box;
+}
+
+h1 {
+    margin-left: 5px;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #0a0710;
+    color: white
+}
+
+.container {
+    max-width: 500px;
+    /* padding: 0 30px; */
+    margin: 100px auto;
+}
+
+#game-board {
+    border: solid 2px white;
+    margin-bottom: 2em;
+}
+
+#game-board td {
+    border: solid 2px white;
+    height: 160px;
+    width: 160px;
+    text-align: center;
+    color: white;
+    font-size: 90px;
+}

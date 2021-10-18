@@ -4,48 +4,53 @@
   <title>Tic-Tac-JS</title>
   <script src="https://code.jquery.com/jquery.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/jasmine.css">
-  <style>
-    body {
-        font-family: sans-serif;
-    }
-
-    #game-board {
-        border: solid 1px black;
-        margin-bottom: 2em;
-    }
-
-    #game-board td {
-        border: solid 1px black;
-        height: 80px;
-        width: 80px;
-        text-align: center;
-        font-size: 45px;
-    }
-  </style>
+  <link rel="stylesheet" href="/css">
 </head>
 <body>
 
-<h1>Tic Tac JS
-  <button id="start-game">Start!</button>
-</h1>
+<h1>Tic Tac JS</h1>
+<h1 style="text-align: center;" id="winner">Click "Start Game"!</h1>
+<div class="container">
+  <table id="game-board" cellpadding="0" cellspacing="0">
+    <tr>
+      <td id="cell-0"></td>
+      <td id="cell-1"></td>
+      <td id="cell-2"></td>
+    </tr>
+    <tr>
+      <td id="cell-3"></td>
+      <td id="cell-4"></td>
+      <td id="cell-5"></td>
+    </tr>
+    <tr>
+      <td id="cell-6"></td>
+      <td id="cell-7"></td>
+      <td id="cell-8"></td>
+    </tr>
+  </table>
 
-<table id="game-board" cellpadding="0" cellspacing="0">
-  <tr>
-    <td id="cell-0"></td>
-    <td id="cell-1"></td>
-    <td id="cell-2"></td>
-  </tr>
-  <tr>
-    <td id="cell-3"></td>
-    <td id="cell-4"></td>
-    <td id="cell-5"></td>
-  </tr>
-  <tr>
-    <td id="cell-6"></td>
-    <td id="cell-7"></td>
-    <td id="cell-8"></td>
-  </tr>
-</table>
+  <div class="field">
+    <label for="starting">Starting Player</label>
+    <select id="starting">
+      <option value="1">Human</option>
+      <option value="0">Computer</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="diff">Difficulty</label>
+    <select id="diff">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option selected="selected" value="-1">Unlimited</option>
+    </select>
+  </div>
+
+
+  <button id="start-game">Start Game</button>
+</div>
 
 <script src='/js'></script>
 

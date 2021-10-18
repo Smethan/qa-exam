@@ -2,9 +2,13 @@
 
 
 
-
-// The board is a simple 9-element array of null-for-empty, "X", or "O"
+//Initialize variables
 var board;
+var symbol;
+var CPUSymbol;
+var maximizing;
+let maxDepth = -1;
+let nodesMap = new Map();
 
 
 function initializeBoard() {
@@ -53,7 +57,8 @@ function findWinner(board) {
         if (cell !== null) {
             if ((board[xyToCell(1, rowi)] === cell) &&
                 (board[xyToCell(2, rowi)] === cell)) {
-                return cell;
+                    let obj = {cell, "direction": `h-${rowi}`}
+                    return obj;
             }
         }
     }
@@ -64,7 +69,8 @@ function findWinner(board) {
         if (cell !== null) {
             if ((board[xyToCell(coli, 1)] === cell) &&
                 (board[xyToCell(coli, 2)] === cell)) {
-                return cell;
+                    let obj = {cell, "direction": `v-${coli}`}
+                    return obj;
             }
         }
     }
@@ -75,12 +81,14 @@ function findWinner(board) {
     if (cell !== null) {
 
         if ((board[2] === cell) && (board[6] === cell)) {
-            return cell;
+            let obj = {cell, "direction": "d-main"}    
+            return obj;
         }
 
         // diagonal \
         if ((board[0] === cell) && (board[8] === cell)) {
-            return cell;
+            let obj = {cell, "direction": "d-notmain"}
+            return obj;
         }
     }
 }
@@ -99,8 +107,6 @@ function placePiece(cellNumber, pieceType) {
     return false;
 }
 
-let maxDepth = -1;
-let nodesMap = new Map();
 
 function getAvailableMoves(board) {
     const moves = []
@@ -122,10 +128,12 @@ function computerMove(board, maximizing = true, callback = () => {}, depth = 0) 
 //   }
     if (depth === 0) {nodesMap.clear()}
     if (findWinner(board) || isBoardFull(board) || depth === maxDepth) {
-        if (findWinner(board) === 'O') {
-            return -100 + depth;
-        } else if (findWinner(board) === 'X') {
-            return 100 - depth;
+        if(findWinner(board)){
+            if (findWinner(board).cell === 'O') {
+                return -100 + depth;
+            } else if (findWinner(board).cell === 'X') {
+                return 100 - depth;
+            }
         }
         return 0
     }
@@ -196,7 +204,6 @@ function computerMove(board, maximizing = true, callback = () => {}, depth = 0) 
             } else {
                 returnValue = nodesMap.get(best)
             }
-            console.log(depth)
             callback(returnValue)
             return returnValue
         }
@@ -212,20 +219,24 @@ function checkGameOver(board) {
 
     var winner = findWinner(board);
     var gameOver = false;
+    var winnerText = document.getElementById("winner")
 
     if (winner) {
-        $("h1").text(winner + " Won!");
+        winnerText.innerHTML = `${winner.cell} Wins!`
         gameOver = true;
     }
 
     else if (isBoardFull(board)) {
-        $("h1").text("Tie!");
+        winnerText.innerHTML = "Draw!"
         gameOver = true;
     }
 
     if (gameOver) {
         // If game is over, no longer respond to board clicks
         $("#game-board td").off("click");
+        document.getElementById('start-game').disabled = false;
+        document.getElementById('starting').disabled = false;
+        document.getElementById('diff').disabled = false;
     }
 
     return gameOver;
@@ -242,14 +253,11 @@ function makeHumanMove(cellNumber) {
     //     - update board
     //     - check if game is over
 
-    if (placePiece(cellNumber, "X")) {
+    if (placePiece(cellNumber, symbol)) {
         updateBoard();
 
         if (! checkGameOver(board)) {
-            console.log(board)
-            computerMove(board, false, best => {board[best] = 'O'; console.log(best)})
-            console.log(nodesMap)
-        //   board[computerMove(board, false)] = 'O';
+            computerMove(board, !maximizing, best => {board[best] = CPUSymbol; console.log(best)})
             updateBoard();
             checkGameOver(board)
         }
@@ -267,16 +275,40 @@ function handleClick(evt) {
 }
 
 
-function startGame(evt) {
+function startGame(depth, startingPlayer) {
     // Handle start-game button
+    document.getElementById('start-game').disabled = true;
+    document.getElementById('starting').disabled = true;
+    document.getElementById('diff').disabled = true;
     initializeBoard();
+    updateBoard();
+    document.getElementById("winner").innerHTML = "Game is running!"
+
 
     // Allow clicks on game board
     $('#game-board td').on('click', handleClick);
 
+    maxDepth = depth
+    maximizing = parseInt(startingPlayer);
+    symbol = maximizing ? "X" : "O"
+    CPUSymbol = !maximizing ? "X" : "O"
+    if (!maximizing) {
+        let firstChoices = [0,2,4,6,8];
+        let firstChoice = firstChoices[Math.floor(Math.random() * firstChoices.length)]
+        board[firstChoice] = CPUSymbol
+        updateBoard();
+        checkGameOver(board);
+    }
+
     // Remove start-game button
-    $(this).remove();
+    // $(this).remove();
 }
 
 
-$("#start-game").on("click", startGame);
+$("#start-game").on("click", () => {
+    const startingDiv = document.getElementById("starting");
+    const starting = startingDiv.options[startingDiv.selectedIndex].value;
+    const diffDiv = document.getElementById("diff")
+    const diff = diffDiv.options[diffDiv.selectedIndex].value;
+    startGame(diff, starting)
+});

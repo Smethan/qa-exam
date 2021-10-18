@@ -10,6 +10,7 @@ app.get('/',function(req,res) {
 });
 
 app.use('/js', express.static(path.join(__dirname, '../tictacjs.js')))
+app.use('/css', express.static(path.join(__dirname, '../style.css')))
 
 const port = process.env.PORT || 5500
 
